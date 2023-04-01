@@ -16,4 +16,19 @@ server.listen(3000, () => {
   console.log(`App listen on port ${3000}`)
 })
 
+// Error handler http request
+app.use(async (req, res, next) => {
+  next(new Error('Not Found'))
+})
+
+// custom error
+app.use((err, req, res, next) => {
+  res.status(err.status || 500)
+  res.send({
+    succes: false,
+    status: err.status || 500,
+    message: err.message
+  })
+})
+
 module.exports = app
