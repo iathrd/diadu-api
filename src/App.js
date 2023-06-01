@@ -1,10 +1,12 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
+const { database } = require('./helpers/db')
 
 const app = express()
 const server = require('http').createServer(app)
 require('dotenv').config()
+
 const { SERVER_PORT } = process.env
 
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -16,6 +18,7 @@ app.use('/api', exampleRoute)
 
 server.listen(SERVER_PORT, () => {
   console.log(`App listen on port ${SERVER_PORT}`)
+  database()
 })
 
 // Error handler http request
