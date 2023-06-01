@@ -18,6 +18,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       phoneNumber: {
+        allowNull: true,
         type: Sequelize.STRING
       },
       createdAt: {

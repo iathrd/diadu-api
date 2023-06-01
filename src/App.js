@@ -12,9 +12,12 @@ const { SERVER_PORT } = process.env
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(morgan('dev'))
 
-const exampleRoute = require('./routes/example')
+// define api route
+const appRoute = require('./routes')
 
-app.use('/api', exampleRoute)
+// defie api
+app.use('/api', appRoute.example)
+app.use('/api', appRoute.user)
 
 server.listen(SERVER_PORT, () => {
   console.log(`App listen on port ${SERVER_PORT}`)
