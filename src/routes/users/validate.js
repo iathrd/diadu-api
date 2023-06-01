@@ -17,7 +17,6 @@ module.exports = {
       custom: {
         options: async (values) => {
           const findDuplicateUsername = await Users.findOne({ where: { username: values } })
-          console.log(findDuplicateUsername)
           if (findDuplicateUsername) {
             throw Error
           }
