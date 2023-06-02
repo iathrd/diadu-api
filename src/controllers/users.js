@@ -1,4 +1,5 @@
 const { Users } = require('@src/db/models')
+const { response } = require('@src/helpers/utils')
 const { validationResult } = require('express-validator')
 const { v4: uuidv4 } = require('uuid')
 const argon2 = require('argon2')
@@ -10,28 +11,13 @@ module.exports = {
       const errors = validationResult(req)
 
       if (!errors.isEmpty()) {
-        return res.status(400).json({
-          success: false,
-          errors: errors.array()
-        })
+        return response(res, 'error validation', { errors: errors.array() }, false, 400)
       }
 
       const hashedPassword = await argon2.hash(req.body.password)
       const createUser = await Users.create({ ...req.body, id: uuidv4(), password: hashedPassword })
-      console.log()
-      res.status(200).send({
-        status: 200,
-        data: createUser.dataValues,
-        message: 'User berhasil dibuat',
-        isSuccess: true
-      })
-      res.json({ test: 'sdsa' })
+      response(res, 'User created', { data: createUser.dataValues }, true, 201)
     } catch (error) {
-      res.status(500).send({
-        status: 500,
-        message: 'Internal server error',
-        isSuccess: false
-      })
       next(error)
     }
   },
@@ -40,22 +26,14 @@ module.exports = {
       const errors = validationResult(req)
 
       if (!errors.isEmpty()) {
-        return res.status(400).json({
-          success: false,
-          errors: errors.array()
-        })
+        return response(res, 'error validation', { errors: errors.array() }, false, 400)
       }
 
       const { SECRET_KEY } = process.env
 
       const token = jwt.sign({ username: req.body.username }, SECRET_KEY, { expiresIn: '1h' })
 
-      res.status(200).send({
-        status: 200,
-        data: { secret_token: token },
-        message: 'login succesfuly',
-        isSuccess: true
-      })
+      response(res, 'Login succesfuly', { data: { jwt_token: token } }, true, 200)
     } catch (error) {
       next(error)
     }
