@@ -15,7 +15,7 @@ module.exports = {
       }
 
       const hashedPassword = await argon2.hash(req.body.password)
-      const createUser = await Users.create({ ...req.body, id: uuidv4(), password: hashedPassword })
+      const createUser = await Users.create({ ...req.body, id: uuidv4(), password: hashedPassword, roleId: 2 })
       response(res, 'User created', { data: createUser.dataValues }, true, 201)
     } catch (error) {
       next(error)

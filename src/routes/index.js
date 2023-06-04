@@ -1,5 +1,4 @@
-
 const user = require('./users/users')
-const example = require('./example')
+const roles = require('./roles/roles')
 
-module.exports = { user, example }
+module.exports = { user, roles }

@@ -16,8 +16,8 @@ app.use(morgan('dev'))
 const appRoute = require('./routes')
 
 // defie api
-app.use('/api', appRoute.example)
 app.use('/api', appRoute.user)
+app.use('/api', appRoute.roles)
 
 server.listen(SERVER_PORT, () => {
   console.log(`App listen on port ${SERVER_PORT}`)

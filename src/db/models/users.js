@@ -11,6 +11,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate (models) {
       // define association here
+      Users.belongsTo(models.Roles, {
+        as: 'role',
+        foreignKey: 'roleId'
+      })
     }
   }
   Users.init({
@@ -25,10 +29,12 @@ module.exports = (sequelize, DataTypes) => {
     phoneNumber: {
       type: DataTypes.STRING,
       allowNull: true
-    }
+    },
+    roleId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Users'
   })
+
   return Users
 }
