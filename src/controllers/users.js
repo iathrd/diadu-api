@@ -1,4 +1,4 @@
-const { Users } = require('@src/db/models')
+const { Users, Roles } = require('@src/db/models')
 const { response } = require('@src/helpers/utils')
 const { validationResult } = require('express-validator')
 const { v4: uuidv4 } = require('uuid')
@@ -35,6 +35,18 @@ module.exports = {
 
       response(res, 'Login succesfuly', { data: { jwt_token: token } }, true, 200)
     } catch (error) {
+      next(error)
+    }
+  },
+  getUser: async (req, res, next) => {
+    try {
+      const { userId } = req.query
+      console.log(req.param)
+      const user = await Users.findOne({ where: { id: userId }, include: [{ model: Roles, as: 'role' }] })
+      if (!user) return response(res, 'User doest exist', {}, false, 401)
+      return response(res, 'Detail user', { data: user?.dataValues }, true, 200)
+    } catch (error) {
+      console.log(error)
       next(error)
     }
   }
