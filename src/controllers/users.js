@@ -40,13 +40,21 @@ module.exports = {
   },
   getUser: async (req, res, next) => {
     try {
-      const { userId } = req.query
-      console.log(req.param)
-      const user = await Users.findOne({ where: { id: userId }, include: [{ model: Roles, as: 'role' }] })
+      const { id } = req.params
+      const user = await Users.findOne({ where: { id }, include: [{ model: Roles, as: 'role' }] })
       if (!user) return response(res, 'User doest exist', {}, false, 401)
       return response(res, 'Detail user', { data: user?.dataValues }, true, 200)
     } catch (error) {
-      console.log(error)
+      next(error)
+    }
+  },
+  deleteUser: async (req, res, next) => {
+    try {
+      const { id } = req.params
+      const deletUser = await Users.destroy({ where: { id } })
+      if (!deletUser) return response(res, 'User doest exist', {}, false, 401)
+      return response(res, 'Detail user', { data: deletUser?.dataValues }, true, 200)
+    } catch (error) {
       next(error)
     }
   }
