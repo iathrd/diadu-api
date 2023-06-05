@@ -8,13 +8,15 @@ const jwt = require('jsonwebtoken')
 module.exports = {
   signup: async (req, res, next) => {
     try {
+      // validate req.body
       const errors = validationResult(req)
-
+      // has error validation
       if (!errors.isEmpty()) {
         return response(res, 'error validation', { errors: errors.array() }, false, 400)
       }
-
+      // hashed password
       const hashedPassword = await argon2.hash(req.body.password)
+      // save user data to the database
       const createUser = await Users.create({ ...req.body, id: uuidv4(), password: hashedPassword, roleId: 2 })
       response(res, 'User created', { data: createUser.dataValues }, true, 201)
     } catch (error) {
@@ -23,17 +25,18 @@ module.exports = {
   },
   signin: async (req, res, next) => {
     try {
+      // validate req.body
       const errors = validationResult(req)
-
+      // has error validation
       if (!errors.isEmpty()) {
         return response(res, 'error validation', { errors: errors.array() }, false, 400)
       }
-
+      // jwt secret key
       const { SECRET_KEY } = process.env
+      // generated access token using jwt
+      const token = jwt.sign({ username: req.user.username, role: req.user.role.name }, SECRET_KEY, { expiresIn: '1h' })
 
-      const token = jwt.sign({ username: req.body.username }, SECRET_KEY, { expiresIn: '1h' })
-
-      response(res, 'Login succesfuly', { data: { jwt_token: token } }, true, 200)
+      response(res, 'Login succesfuly', { data: { access_token: token } }, true, 200)
     } catch (error) {
       next(error)
     }
@@ -41,6 +44,7 @@ module.exports = {
   getUser: async (req, res, next) => {
     try {
       const { id } = req.params
+      // find user with database roles relation
       const user = await Users.findOne({ where: { id }, include: [{ model: Roles, as: 'role' }] })
       if (!user) return response(res, 'User doest exist', {}, false, 401)
       return response(res, 'Detail user', { data: user?.dataValues }, true, 200)
@@ -51,6 +55,7 @@ module.exports = {
   deleteUser: async (req, res, next) => {
     try {
       const { id } = req.params
+      // delete user data
       const deletUser = await Users.destroy({ where: { id } })
       if (!deletUser) return response(res, 'User doest exist', {}, false, 401)
       return response(res, 'Detail user', { data: deletUser?.dataValues }, true, 200)

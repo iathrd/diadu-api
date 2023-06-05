@@ -1,5 +1,5 @@
 const { checkSchema } = require('express-validator')
-const { Users } = require('@src/db/models')
+const { Users, Roles } = require('@src/db/models')
 const argon2 = require('argon2')
 
 module.exports = {
@@ -76,14 +76,14 @@ module.exports = {
       },
       custom: {
         options: async (values, { req }) => {
-          const user = await Users.findOne({ where: { username: values } })
+          const user = await Users.findOne({ where: { username: values }, include: [{ model: Roles, as: 'role' }] })
           const { password } = user.dataValues
           if (user) {
             const verifyPassword = argon2.verify(password, req.body.password || 'p 123091u 0hasod10u12')
             if (!verifyPassword) {
               throw Error
             } else {
-              req.body.user = user.dataValues
+              req.user = user.dataValues
             }
             return verifyPassword
           }
