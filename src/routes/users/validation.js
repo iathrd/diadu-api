@@ -1,5 +1,5 @@
 const { checkSchema } = require('express-validator')
-const { Users, Roles } = require('@src/db/models')
+const { Users, Roles } = require('#src/db/models')
 const argon2 = require('argon2')
 
 module.exports = {

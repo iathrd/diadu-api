@@ -1,4 +1,4 @@
-const { response } = require('@src/helpers/utils')
+const { response } = require('#src/helpers/utils')
 const jwt = require('jsonwebtoken')
 
 module.exports = (expectedRole) => (req, res, next) => {

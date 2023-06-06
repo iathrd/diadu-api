@@ -1,4 +1,4 @@
-const users = require('@src/controllers/users')
+const users = require('#src/controllers/users')
 const route = require('express').Router()
 const validate = require('./validation')
 const authorize = require('../../middlewares/authorize')

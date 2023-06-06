@@ -1,6 +1,6 @@
-const { Roles } = require('@src/db/models')
+const { Roles } = require('#src/db/models')
 const { validationResult } = require('express-validator')
-const { response } = require('@src/helpers/utils')
+const { response } = require('#src/helpers/utils')
 
 module.exports = {
   createRole: async (req, res, next) => {

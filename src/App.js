@@ -2,10 +2,12 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const { database } = require('./helpers/db')
+const cors = require('cors')
 
 const app = express()
 const server = require('http').createServer(app)
 require('dotenv').config()
+app.use(cors())
 
 const { SERVER_PORT } = process.env
 

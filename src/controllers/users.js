@@ -1,5 +1,5 @@
-const { Users, Roles } = require('@src/db/models')
-const { response } = require('@src/helpers/utils')
+const { Users, Roles } = require('#src/db/models')
+const { response } = require('#src/helpers/utils')
 const { validationResult } = require('express-validator')
 const { v4: uuidv4 } = require('uuid')
 const argon2 = require('argon2')

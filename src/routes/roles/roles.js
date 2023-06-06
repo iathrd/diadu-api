@@ -1,4 +1,4 @@
-const roles = require('@src/controllers/roles')
+const roles = require('#src/controllers/roles')
 const route = require('express').Router()
 const validate = require('./validation')
 
