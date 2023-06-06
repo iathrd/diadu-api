@@ -32,11 +32,13 @@ module.exports = {
         return response(res, 'error validation', { errors: errors.array() }, false, 400)
       }
       // jwt secret key
-      const { SECRET_KEY } = process.env
+      const { SECRET_KEY, REFRESH_KEY } = process.env
       // generated access token using jwt
-      const token = jwt.sign({ username: req.user.username, role: req.user.role.name }, SECRET_KEY, { expiresIn: '1h' })
+      const accessToken = jwt.sign({ username: req.user.username, role: req.user.role.name }, SECRET_KEY, { expiresIn: '1h' })
+      // generated refresh token
+      const refreshToken = jwt.sign({ username: req.user.username, role: req.user.role.name }, REFRESH_KEY, { expiresIn: '1d' })
 
-      response(res, 'Login succesfuly', { data: { access_token: token } }, true, 200)
+      response(res, 'Login succesfuly', { data: { accessToken, refreshToken } }, true, 200)
     } catch (error) {
       next(error)
     }
@@ -59,6 +61,23 @@ module.exports = {
       const deletUser = await Users.destroy({ where: { id } })
       if (!deletUser) return response(res, 'User doest exist', {}, false, 401)
       return response(res, 'Detail user', { data: deletUser?.dataValues }, true, 200)
+    } catch (error) {
+      next(error)
+    }
+  },
+  refreshToken: async (req, res, next) => {
+    try {
+      const { refreshToken } = req.params
+      // verify refresh token
+      jwt.verify(refreshToken, process.env.REFRESH_KEY, (err, decode) => {
+        if (err) {
+          const message = err.name === 'JsonWebTokenError' ? 'Unauthorized' : err.message
+          return response(res, message, {}, false, 401)
+        }
+        // generated new access token
+        const accessToken = jwt.sign({ username: decode.username, role: decode.role }, process.env.SECRET_KEY, { expiresIn: '1h' })
+        return response(res, 'refresh succesfuly', { data: { accessToken, refreshToken } }, true, 200)
+      })
     } catch (error) {
       next(error)
     }
